@@ -7,7 +7,7 @@
 //
 
 #import "ChimpKit2ViewController.h"
-
+#import "SubscribeAlertView.h"
 @implementation ChimpKit2ViewController
 
 
@@ -45,6 +45,19 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 */
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    SubscribeAlertView *alert = [[SubscribeAlertView alloc] initWithTitle:@"Subscribe" 
+                                                                  message:@"Enter your email address to subscribe to our mailing list." 
+                                                                   apiKey:@"<YOUR API KEY>" 
+                                                                   listId:@"<LIST ID>" 
+                                                        cancelButtonTitle:@"Cancel"
+                                                     subscribeButtonTitle:@"Subscribe"];
+    [alert show];
+    [alert release];
+}
 
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.

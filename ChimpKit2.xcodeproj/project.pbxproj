@@ -35,6 +35,7 @@
 		C2325EDD1296F459009BA5A7 /* libz.1.2.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C2325EDC1296F459009BA5A7 /* libz.1.2.3.dylib */; };
 		C2325EFF1296F598009BA5A7 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = C2325EFE1296F598009BA5A7 /* Reachability.m */; };
 		C2325F0A1296F63C009BA5A7 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2325F091296F63C009BA5A7 /* SystemConfiguration.framework */; };
+		C2BFCC65134CA06500F3184D /* SubscribeAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = C2BFCC64134CA06500F3184D /* SubscribeAlertView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -93,6 +94,8 @@
 		C2325EFD1296F598009BA5A7 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		C2325EFE1296F598009BA5A7 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		C2325F091296F63C009BA5A7 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		C2BFCC63134CA06500F3184D /* SubscribeAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; path = SubscribeAlertView.h; sourceTree = "<group>"; };
+		C2BFCC64134CA06500F3184D /* SubscribeAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubscribeAlertView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +121,8 @@
 			children = (
 				C2325EA61296E7FE009BA5A7 /* ChimpKit.h */,
 				C2325EA71296E7FE009BA5A7 /* ChimpKit.m */,
+				C2BFCC63134CA06500F3184D /* SubscribeAlertView.h */,
+				C2BFCC64134CA06500F3184D /* SubscribeAlertView.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -344,6 +349,7 @@
 				C2325EA51296E7F2009BA5A7 /* ChimpKit2ViewController.m in Sources */,
 				C2325EA81296E7FE009BA5A7 /* ChimpKit.m in Sources */,
 				C2325EFF1296F598009BA5A7 /* Reachability.m in Sources */,
+				C2BFCC65134CA06500F3184D /* SubscribeAlertView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

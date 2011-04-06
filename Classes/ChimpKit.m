@@ -62,12 +62,12 @@
     if (self.apiKey) {
         [postBodyParams setValue:self.apiKey forKey:@"apikey"];
     }
-    
+
     if (params) {
         [postBodyParams setValuesForKeysWithDictionary:params];
         postBodyParams = [self encodeDictionary:postBodyParams];
     }
-    
+
     NSMutableData *postData = [NSMutableData dataWithData:[[postBodyParams JSONRepresentation] dataUsingEncoding:NSUTF8StringEncoding]];
     [request setPostBody:postData];
     [request startAsynchronous];
