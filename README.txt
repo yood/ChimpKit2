@@ -4,3 +4,7 @@ There's sample code in the AppDelegate showing how to call API methods (includin
 
 There's also sample code in ChimpKit2ViewController that shows how to use SubscribeAlertView, a dialog
 that makes it easier to subscribe users to your mailing list.
+
+TODO:
+- Support localization
+- Improve interface (not UI) for subscribe dialog
