@@ -7,4 +7,5 @@ that makes it easier to subscribe users to your mailing list.
 
 TODO:
 - Support localization
+- Delegate protocol
 - Improve interface (not UI) for subscribe dialog
