@@ -12,6 +12,7 @@
 @interface SubscribeAlertView()
 @property (nonatomic, retain) ChimpKit *chimpKit;
 @property (nonatomic, retain) NSString *listId;
+- (void)requestCompleted:(ASIHTTPRequest *)request;
 @end
 
 @implementation SubscribeAlertView
