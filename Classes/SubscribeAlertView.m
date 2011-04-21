@@ -41,6 +41,7 @@
         aTextField.autocorrectionType = UITextAutocorrectionTypeNo;
         aTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
         aTextField.delegate = self;
+        aTextField.keyboardType = UIKeyboardTypeEmailAddress;
         self.textField = aTextField;        
         [self addSubview:self.textField];
         
