@@ -107,7 +107,8 @@
 
 - (void)requestCompleted:(ASIHTTPRequest *)request {
     NSString *response = [request responseString];
-    if (![response isEqualToString:@"true"]) {
+    if (![response isEqualToString:@"true"]
+        && [response rangeOfString:@"214"].location == NSNotFound ) { // Ignore already subscribed error.
         UIAlertView *errorAlertView = [[UIAlertView alloc] initWithTitle:@"Subscription Failed"
 															message:@"Unable to subscribe your email address. Please check it and try again."
 														   delegate:nil 
