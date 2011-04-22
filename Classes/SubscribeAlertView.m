@@ -117,6 +117,16 @@
 		[errorAlertView show];
 		[errorAlertView release];
     }
+    else
+    {
+        UIAlertView *successAlertView = [[UIAlertView alloc] initWithTitle:nil
+															message:@"Thanks! We've successfully added you to our mailing list."
+														   delegate:nil
+												  cancelButtonTitle:@"OK"
+												  otherButtonTitles:nil];
+        [successAlertView show];
+        [successAlertView release];
+    }
 
     //Release self since we retained self in init and self's work is now done.
     [self release];
