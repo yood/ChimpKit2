@@ -37,6 +37,7 @@
         UITextField *aTextField = [[[UITextField alloc] initWithFrame:CGRectZero] autorelease];
         aTextField.borderStyle = UITextBorderStyleRoundedRect;
         aTextField.placeholder = @"Email Address";
+        aTextField.keyboardType = UIKeyboardTypeEmailAddress;
         aTextField.autocorrectionType = UITextAutocorrectionTypeNo;
         aTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
         aTextField.delegate = self;
