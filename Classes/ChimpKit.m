@@ -65,10 +65,10 @@
 
     if (params) {
         [postBodyParams setValuesForKeysWithDictionary:params];
-        postBodyParams = [self encodeDictionary:postBodyParams];
     }
 
-    NSMutableData *postData = [NSMutableData dataWithData:[[postBodyParams JSONRepresentation] dataUsingEncoding:NSUTF8StringEncoding]];
+    NSString *encodedParamsAsJson = [self encodeString:[postBodyParams JSONRepresentation]];
+    NSMutableData *postData = [NSMutableData dataWithData:[encodedParamsAsJson dataUsingEncoding:NSUTF8StringEncoding]];
     [request setPostBody:postData];
     [request startAsynchronous];
 }
@@ -105,7 +105,7 @@
             [encodedArray addObject:item];
         }
     }
-             
+
     return encodedArray;
 }
 
@@ -117,8 +117,6 @@
                                                                                   kCFStringEncodingUTF8);
     return [encodedString autorelease];
 }
-
-//TODO: Stub out all version 1.3 API methods w/ required params and optional params in a single dictionary
 
 - (void)dealloc {
     self.apiKey = nil;
