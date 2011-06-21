@@ -15,6 +15,8 @@
     SEL onSuccess;
     SEL onFailure;
 
+    int timeout;
+
     NSString *apiUrl;
     NSString *apiKey;
 }
@@ -23,9 +25,10 @@
 @property (nonatomic,readwrite) SEL onSuccess;
 @property (nonatomic,readwrite) SEL onFailure;
 
+@property (nonatomic, assign) int timeout;
+
 @property (nonatomic,retain) NSString *apiUrl;
 @property (nonatomic,retain) NSString *apiKey;
-
 
 -(id)initWithDelegate:(id)aDelegate andApiKey:(NSString *)key;
 -(void)callApiMethod:(NSString *)method withParams:(NSDictionary *)params;

@@ -17,7 +17,7 @@
 
 @implementation ChimpKit
 
-@synthesize apiUrl, apiKey, delegate, onSuccess, onFailure;
+@synthesize timeout, apiUrl, apiKey, delegate, onSuccess, onFailure;
 
 #pragma mark -
 #pragma mark Initialization
@@ -39,6 +39,7 @@
         self.apiUrl  = @"https://api.mailchimp.com/1.3/?method=";
         [self setApiKey:key];
         self.delegate = aDelegate;
+        self.timeout = 30;
 	}
 	return self;
 }
@@ -52,6 +53,7 @@
 
     ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:urlString]];
     [request setDelegate:self.delegate];
+    [request setTimeOutSeconds:self.timeout];
     [request setUserInfo:userInfo];
     [request setDidFinishSelector:self.onSuccess];
     [request setDidFailSelector:self.onFailure];
