@@ -3,7 +3,7 @@
 //  ChimpKit2
 //
 //  Created by Amro Mousa on 4/6/11.
-//  Copyright 2011 return7, LLC. All rights reserved.
+//  Copyright 2011 MailChimp. All rights reserved.
 //
 
 #import "SubscribeAlertView.h"

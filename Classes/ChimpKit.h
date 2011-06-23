@@ -3,7 +3,7 @@
 //  ChimpKit2
 //
 //  Created by Amro Mousa on 11/19/10.
-//  Copyright 2010 return7, LLC. All rights reserved.
+//  Copyright 2010 MailChimp. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -19,6 +19,8 @@
 
     NSString *apiUrl;
     NSString *apiKey;
+
+    ASIHTTPRequest *request;
 }
 
 @property (assign,readwrite)    id  delegate;
@@ -29,6 +31,8 @@
 
 @property (nonatomic,retain) NSString *apiUrl;
 @property (nonatomic,retain) NSString *apiKey;
+
+@property (nonatomic,retain) ASIHTTPRequest *request;
 
 -(id)initWithDelegate:(id)aDelegate andApiKey:(NSString *)key;
 -(void)callApiMethod:(NSString *)method withParams:(NSDictionary *)params;

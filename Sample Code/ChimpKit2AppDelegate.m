@@ -3,7 +3,7 @@
 //  ChimpKit2
 //
 //  Created by Amro Mousa on 11/19/10.
-//  Copyright 2010 return7, LLC. All rights reserved.
+//  Copyright 2010 MailChimp. All rights reserved.
 //
 
 #import "ChimpKit2AppDelegate.h"
