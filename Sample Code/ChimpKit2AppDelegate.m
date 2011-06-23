@@ -8,7 +8,6 @@
 
 #import "ChimpKit2AppDelegate.h"
 #import "ChimpKit2ViewController.h"
-#import "ChimpKit.h"
 
 @implementation ChimpKit2AppDelegate
 
@@ -27,33 +26,39 @@
     [self.window addSubview:viewController.view];
     [self.window makeKeyAndVisible];
 
+    //We can set ChimpKit's timeout globally
+    [ChimpKit setTimeout:15];
+    
     ChimpKit *ck = [[[ChimpKit alloc] initWithDelegate:self 
-                                             andApiKey:@"<YOUR_API_KEY>"] 
+                                            andApiKey:@"<YOUR_API_KEY>"] 
                     autorelease];
-    ck.onSuccess = @selector(requestCompleted:);
-    ck.onFailure = @selector(requestCompleted:);
+
     // This call would fetch lists
     // [ck callApiMethod:@"lists" withParams:nil];
         
     // Build the params dictionary (please see documentation at http://apidocs.mailchimp.com/1.3 )
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [params setValue:@"<YOUR_LIST_ID>" forKey:@"id"];
-    [params setValue:@"someaddress@example.com" forKey:@"email_address"];
+    [params setValue:@"someemail@example.com" forKey:@"email_address"];
     [params setValue:@"true" forKey:@"double_optin"];
-    
+
     NSMutableDictionary *mergeVars = [NSMutableDictionary dictionary];
     [mergeVars setValue:@"First" forKey:@"FNAME"];
     [mergeVars setValue:@"Last" forKey:@"LNAME"];
     [params setValue:mergeVars forKey:@"merge_vars"];
-    
+
     [ck callApiMethod:@"listSubscribe" withParams:params];
 
     return YES;
 }
 
-- (void)requestCompleted:(ASIHTTPRequest *)request {
-    NSLog(@"Response Code: %d", [request responseStatusCode]);
-    NSLog(@"Response String: %@", [request responseString]);
+- (void)ckRequestSucceeded:(ChimpKit *)ckRequest {
+    NSLog(@"Response Code: %d", [ckRequest responseStatusCode]);
+    NSLog(@"Response String: %@", [ckRequest responseString]);
+}
+
+- (void)ckRequestFailed:(NSError *)error {
+    NSLog(@"Response Error: %@", error);
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

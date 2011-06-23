@@ -8,16 +8,28 @@
 
 #import "ChimpKit.h"
 
+static NSUInteger timeout = 10;
+static NSOperationQueue *queue = nil;
+
 @interface ChimpKit()
+- (void)setDefaultRequestParams;
+- (NSMutableData *)encodeRequestParams:(NSDictionary *)params;
 - (NSString *)encodeString:(NSString *)unencodedString;
+- (void)cancel;
 @end
 
 
 @implementation ChimpKit
 
-@synthesize timeout, apiUrl, apiKey, request, delegate, onSuccess, onFailure;
+@synthesize apiUrl, apiKey, request, delegate, userInfo;
+@synthesize responseString = _responseString;
+@synthesize responseStatusCode = _responseStatusCode;
+@synthesize error = _error;
 
-#pragma mark -
++ (void)setTimeout:(NSUInteger)tout {
+    timeout = tout;
+}
+
 #pragma mark Initialization
 
 - (void)setApiKey:(NSString*)key {
@@ -37,27 +49,18 @@
         self.apiUrl  = @"https://api.mailchimp.com/1.3/?method=";
         [self setApiKey:key];
         self.delegate = aDelegate;
-        self.timeout = 30;
+        
+        if (!queue) {
+            queue = [[NSOperationQueue alloc] init];
+            [queue setMaxConcurrentOperationCount:3];
+        }
 	}
 	return self;
 }
 
-- (void)callApiMethod:(NSString *)method withParams:(NSDictionary *)params {
-    [self callApiMethod:method withParams:params andUserInfo:nil];
-}
+#pragma mark Setup
 
-- (void)callApiMethod:(NSString *)method withParams:(NSDictionary *)params andUserInfo:(NSDictionary *)userInfo {
-    NSString *urlString = [NSString stringWithFormat:@"%@%@", self.apiUrl, method];
-
-    self.request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:urlString]];
-    [self.request setDelegate:self.delegate];
-    [self.request setTimeOutSeconds:self.timeout];
-    [self.request setUserInfo:userInfo];
-    [self.request setDidFinishSelector:self.onSuccess];
-    [self.request setDidFailSelector:self.onFailure];
-    [self.request setRequestMethod:@"POST"];
-    [self.request setShouldContinueWhenAppEntersBackground:YES];
-
+- (NSMutableData *)encodeRequestParams:(NSDictionary *)params {
     NSMutableDictionary *postBodyParams = [NSMutableDictionary dictionary];
     if (self.apiKey) {
         [postBodyParams setValue:self.apiKey forKey:@"apikey"];
@@ -69,8 +72,41 @@
 
     NSString *encodedParamsAsJson = [self encodeString:[postBodyParams JSONRepresentation]];
     NSMutableData *postData = [NSMutableData dataWithData:[encodedParamsAsJson dataUsingEncoding:NSUTF8StringEncoding]];
+    return postData;
+}
+
+- (void)setDefaultRequestParams {
+    [self.request setDelegate:self];
+    [self.request setTimeOutSeconds:timeout];
+    [self.request setRequestMethod:@"POST"];
+    [self.request setShouldContinueWhenAppEntersBackground:YES];
+}
+
+- (void)callApiMethod:(NSString *)method withParams:(NSDictionary *)params {
+    NSString *urlString = [NSString stringWithFormat:@"%@%@", self.apiUrl, method];
+    self.request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:urlString]];
+    [self setDefaultRequestParams];
+    
+    NSMutableData *postData = [self encodeRequestParams:params];
+    
     [self.request setPostBody:postData];
-    [self.request startAsynchronous];
+    [self.request setCompletionBlock:^{
+        _responseString = [self.request.responseString retain];
+        _responseStatusCode = self.request.responseStatusCode;
+        
+        if ([self.delegate respondsToSelector:@selector(ckRequestSucceeded:)]) {
+            [self.delegate performSelector:@selector(ckRequestSucceeded:) withObject:self];
+        }
+    }];
+    
+    [self.request setFailedBlock:^{
+        _error = [self.request.error retain];
+        if ([self.delegate respondsToSelector:@selector(ckRequestFailed:)]) {
+            [self.delegate performSelector:@selector(ckRequestFailed:) withObject:_error];
+        }
+    }];
+
+    [queue addOperation:self];
 }
 
 - (NSString *)encodeString:(NSString *)unencodedString {
@@ -82,18 +118,35 @@
     return [encodedString autorelease];
 }
 
-- (void)cancelRequest {
+#pragma mark Tear down
+
+- (void)cancel {
     if (self.request) {
         [self.request clearDelegatesAndCancel];
-        [request release];
-        self.request = nil;
     }
 }
 
 - (void)dealloc {
+    if (_error) {
+        [_error release];
+    }
+    
+    if (_responseString) {
+        [_responseString release];
+    }
+    
+    [request release];
+    self.request = nil;
+
     self.apiKey = nil;
     self.apiUrl = nil;
     [super dealloc];
+}
+
+#pragma mark NSOperationQueue
+
+- (void)main {
+    [self.request startAsynchronous];
 }
 
 @end

@@ -47,8 +47,6 @@
         self.listId = aListId;
         
         ChimpKit *cKit = [[[ChimpKit alloc] initWithDelegate:self andApiKey:apiKey] autorelease];
-        cKit.onSuccess = @selector(requestCompleted:);
-        cKit.onFailure = @selector(requestCompleted:);
         self.chimpKit = cKit;
         
         //ChimpKit expects self to be around (since it's the delegate!) 
@@ -104,7 +102,7 @@
 
 #pragma mark - ChimpKit Delegate Methods
 
-- (void)requestCompleted:(ASIHTTPRequest *)request {
+- (void)requestCompleted:(ChimpKit *)request {
     NSString *response = [request responseString];
     if (![response isEqualToString:@"true"]) {
         UIAlertView *errorAlertView = [[UIAlertView alloc] initWithTitle:@"Subscription Failed"

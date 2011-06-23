@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ChimpKit.h"
 
 @class ChimpKit2ViewController;
 
-@interface ChimpKit2AppDelegate : NSObject <UIApplicationDelegate> {
+@interface ChimpKit2AppDelegate : NSObject <UIApplicationDelegate, ChimpKitDelegate> {
     UIWindow *window;
     ChimpKit2ViewController *viewController;
 }

@@ -10,35 +10,45 @@
 #import "ASIHTTPRequest.h"
 #import "JSON.h"
 
-@interface ChimpKit : NSObject {
+@class ChimpKit;
+
+@protocol ChimpKitDelegate <NSObject>
+
+@optional
+- (void)ckRequestSucceeded:(ChimpKit *)ckRequest;
+
+@optional
+- (void)ckRequestFailed:(NSError *)error;
+
+@end
+
+@interface ChimpKit : NSOperation {
     id  delegate;
     SEL onSuccess;
     SEL onFailure;
-
-    int timeout;
 
     NSString *apiUrl;
     NSString *apiKey;
 
     ASIHTTPRequest *request;
+    id userInfo;
 }
 
-@property (assign,readwrite)    id  delegate;
-@property (nonatomic,readwrite) SEL onSuccess;
-@property (nonatomic,readwrite) SEL onFailure;
+@property (assign, readwrite) id delegate;
+@property (nonatomic, retain) id userInfo;
 
-@property (nonatomic, assign) int timeout;
+@property (nonatomic, retain) NSString *apiUrl;
+@property (nonatomic, retain) NSString *apiKey;
 
-@property (nonatomic,retain) NSString *apiUrl;
-@property (nonatomic,retain) NSString *apiKey;
+@property (nonatomic, retain) ASIHTTPRequest *request;
 
-@property (nonatomic,retain) ASIHTTPRequest *request;
+@property (nonatomic, readonly) NSString *responseString;
+@property (nonatomic, readonly) NSUInteger responseStatusCode;
+@property (nonatomic, readonly) NSError *error;
+
++ (void)setTimeout:(NSUInteger)tout;
 
 -(id)initWithDelegate:(id)aDelegate andApiKey:(NSString *)key;
 -(void)callApiMethod:(NSString *)method withParams:(NSDictionary *)params;
--(void)callApiMethod:(NSString *)method withParams:(NSDictionary *)params andUserInfo:(NSDictionary *)userInfo;
-
-//Begin API methods
-
 
 @end
