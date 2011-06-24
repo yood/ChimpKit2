@@ -13,13 +13,15 @@ ChimpKit2 includes [json-framework](https://github.com/stig/json-framework) as a
 Add ChimpKit2 as a submodule of your git repo by doing something like:
 
 ```cd myrepo
-git submodule add https://github.com/mailchimp/ChimpKit2.git Lib/ChimpKit```
+git submodule add https://github.com/mailchimp/ChimpKit2.git Lib/ChimpKit
+```
 
 You'll then want to cd into ChimpKit and pull in its dependency (json-framework):
 
 ```cd Lib/ChimpKit
-git submodule init
-git submodule update```
+    git submodule init
+    git submodule update
+```
 
 ##Usage
 
@@ -27,7 +29,8 @@ ChimpKit2 requests are designed for one-time use. To make a request first create
 
 ```ChimpKit *ck = [[[ChimpKit alloc] initWithDelegate:self 
                                             andApiKey:@"<YOUR_API_KEY>"] 
-                                            autorelease];```
+                                            autorelease];
+```
 
 You may have noticed that we passed "self" as the delegate above. You should implement the "ChimpKitDelegate"
 protocol, which includes the following methods:
@@ -39,26 +42,30 @@ protocol, which includes the following methods:
 
 - (void)ckRequestFailed:(NSError *)error {
     NSLog(@"Response Error: %@", error);
-}```
+}
+```
 
 Fetching data is as simple as calling API methods directly on the wrapper object. 
 Check the API [documentation](http://www.mailchimp.com/api/1.3) for details.
 
-##Canceling Requests
+#D#Canceling Requests
 
 You can cancel an in-progress request by passing the "cancel" message:
 
-```[ck cancel];```
+```[ck cancel];
+```
 
 ### Controlling Timeout
 
 ChimpKit2 defaults to a 10 second timeout. You can change that (globally) to 30 seconds like so:
 
-```[ChimpKit setTimeout:30];```
+```[ChimpKit setTimeout:30];
+```
 
 ### Fetching Lists
 
-```[ck callApiMethod:@"lists" withParams:nil];```
+```[ck callApiMethod:@"lists" withParams:nil];
+```
 
 ### Subscribing an Email
 
@@ -73,9 +80,10 @@ NSMutableDictionary *mergeVars = [NSMutableDictionary dictionary];
 [mergeVars setValue:@"Last" forKey:@"LNAME"];
 [params setValue:mergeVars forKey:@"merge_vars"];
 
-[ck callApiMethod:@"listSubscribe" withParams:params];```
+[ck callApiMethod:@"listSubscribe" withParams:params];
+```
 
-### Notes
+## Notes
 
 As much as we love ASIHTTPRequest, ChimpKit2 no longer depends on it. ChimpKit2 does, however, still require json-framework.
 
