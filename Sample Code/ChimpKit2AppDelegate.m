@@ -34,13 +34,14 @@
                     autorelease];
 
     // This call would fetch lists
-    // [ck callApiMethod:@"lists" withParams:nil];
-        
+//    [ck callApiMethod:@"lists" withParams:nil];
+
     // Build the params dictionary (please see documentation at http://apidocs.mailchimp.com/1.3 )
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [params setValue:@"<YOUR_LIST_ID>" forKey:@"id"];
     [params setValue:@"someemail@example.com" forKey:@"email_address"];
     [params setValue:@"true" forKey:@"double_optin"];
+    [params setValue:@"true" forKey:@"update_existing"];
 
     NSMutableDictionary *mergeVars = [NSMutableDictionary dictionary];
     [mergeVars setValue:@"First" forKey:@"FNAME"];
@@ -53,7 +54,7 @@
 }
 
 - (void)ckRequestSucceeded:(ChimpKit *)ckRequest {
-    NSLog(@"Response Code: %d", [ckRequest responseStatusCode]);
+    NSLog(@"HTTP Status Code: %d", [ckRequest responseStatusCode]);
     NSLog(@"Response String: %@", [ckRequest responseString]);
 }
 

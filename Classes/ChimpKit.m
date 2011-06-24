@@ -9,19 +9,20 @@
 #import "ChimpKit.h"
 
 static NSUInteger timeout = 10;
-static NSOperationQueue *queue = nil;
 
 @interface ChimpKit()
-- (void)setDefaultRequestParams;
 - (NSMutableData *)encodeRequestParams:(NSDictionary *)params;
 - (NSString *)encodeString:(NSString *)unencodedString;
-- (void)cancel;
+
+- (void)notifyDelegateOfSuccess;
+- (void)notifyDelegateOfError:(NSError *)error;
+- (void)cleanup;
 @end
 
 
 @implementation ChimpKit
 
-@synthesize apiUrl, apiKey, request, delegate, userInfo;
+@synthesize apiUrl, apiKey, delegate, connection, responseData, userInfo;
 @synthesize responseString = _responseString;
 @synthesize responseStatusCode = _responseStatusCode;
 @synthesize error = _error;
@@ -49,11 +50,6 @@ static NSOperationQueue *queue = nil;
         self.apiUrl  = @"https://api.mailchimp.com/1.3/?method=";
         [self setApiKey:key];
         self.delegate = aDelegate;
-        
-        if (!queue) {
-            queue = [[NSOperationQueue alloc] init];
-            [queue setMaxConcurrentOperationCount:3];
-        }
 	}
 	return self;
 }
@@ -75,38 +71,56 @@ static NSOperationQueue *queue = nil;
     return postData;
 }
 
-- (void)setDefaultRequestParams {
-    [self.request setDelegate:self];
-    [self.request setTimeOutSeconds:timeout];
-    [self.request setRequestMethod:@"POST"];
-    [self.request setShouldContinueWhenAppEntersBackground:YES];
+- (void)callApiMethod:(NSString *)method withParams:(NSDictionary *)params {
+    [self cleanup];
+    self.responseData = [NSMutableData data];
+
+    NSString *urlString = [NSString stringWithFormat:@"%@%@", self.apiUrl, method];
+
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlString]];
+	[request setHTTPMethod:@"POST"];
+    [request setTimeoutInterval:timeout];
+
+    NSMutableData *postData = [self encodeRequestParams:params];
+    [request setHTTPBody:postData];
+
+    self.connection = [[[NSURLConnection alloc] initWithRequest:request delegate:self] autorelease];
 }
 
-- (void)callApiMethod:(NSString *)method withParams:(NSDictionary *)params {
-    NSString *urlString = [NSString stringWithFormat:@"%@%@", self.apiUrl, method];
-    self.request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:urlString]];
-    [self setDefaultRequestParams];
-    
-    NSMutableData *postData = [self encodeRequestParams:params];
-    
-    [self.request setPostBody:postData];
-    [self.request setCompletionBlock:^{
-        _responseString = [self.request.responseString retain];
-        _responseStatusCode = self.request.responseStatusCode;
-        
-        if ([self.delegate respondsToSelector:@selector(ckRequestSucceeded:)]) {
-            [self.delegate performSelector:@selector(ckRequestSucceeded:) withObject:self];
-        }
-    }];
-    
-    [self.request setFailedBlock:^{
-        _error = [self.request.error retain];
-        if ([self.delegate respondsToSelector:@selector(ckRequestFailed:)]) {
-            [self.delegate performSelector:@selector(ckRequestFailed:) withObject:_error];
-        }
-    }];
+#pragma mark NSURLConnection delegate methods
 
-    [queue addOperation:self];
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+    _responseStatusCode = [((NSHTTPURLResponse *)response) statusCode];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+    [self.responseData appendData:data];
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+    [self notifyDelegateOfSuccess];
+    [self cleanup];
+}
+
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+    [self notifyDelegateOfError:error];
+    [self cleanup];
+}
+
+#pragma mark Helpers
+- (void)notifyDelegateOfSuccess {
+    _responseString = [[NSString alloc] initWithData:self.responseData encoding:NSUTF8StringEncoding];
+    if ([self.delegate respondsToSelector:@selector(ckRequestSucceeded:)]) {
+        [self.delegate performSelector:@selector(ckRequestSucceeded:) withObject:self];
+    }
+}
+
+- (void)notifyDelegateOfError:(NSError *)error {
+    _error = [error retain];
+
+    if ([self.delegate respondsToSelector:@selector(ckRequestFailed:)]) {
+        [self.delegate performSelector:@selector(ckRequestFailed:) withObject:error];
+    }
 }
 
 - (NSString *)encodeString:(NSString *)unencodedString {
@@ -121,32 +135,36 @@ static NSOperationQueue *queue = nil;
 #pragma mark Tear down
 
 - (void)cancel {
-    if (self.request) {
-        [self.request clearDelegatesAndCancel];
+    if (self.connection) {
+        [self.connection cancel];
+        [self cleanup];
+    }
+}
+
+- (void)cleanup {
+    if (self.connection) {
+        self.connection = nil;
+    }
+
+    if (self.responseData) {
+        self.responseData = nil;
     }
 }
 
 - (void)dealloc {
-    if (_error) {
-        [_error release];
-    }
-    
+    [self cleanup];
+
     if (_responseString) {
         [_responseString release];
     }
     
-    [request release];
-    self.request = nil;
+    if (_error) {
+        [_error release];
+    }
 
     self.apiKey = nil;
     self.apiUrl = nil;
     [super dealloc];
-}
-
-#pragma mark NSOperationQueue
-
-- (void)main {
-    [self.request startAsynchronous];
 }
 
 @end

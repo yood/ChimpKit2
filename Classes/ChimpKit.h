@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ASIHTTPRequest.h"
 #import "JSON.h"
 
 @class ChimpKit;
@@ -30,8 +29,11 @@
     NSString *apiUrl;
     NSString *apiKey;
 
-    ASIHTTPRequest *request;
     id userInfo;
+
+@private
+    NSURLConnection *connection;
+    NSMutableData *responseData;
 }
 
 @property (assign, readwrite) id delegate;
@@ -40,15 +42,17 @@
 @property (nonatomic, retain) NSString *apiUrl;
 @property (nonatomic, retain) NSString *apiKey;
 
-@property (nonatomic, retain) ASIHTTPRequest *request;
+@property (nonatomic, retain) NSURLConnection *connection;
+@property (nonatomic, retain) NSMutableData *responseData;
 
 @property (nonatomic, readonly) NSString *responseString;
-@property (nonatomic, readonly) NSUInteger responseStatusCode;
+@property (nonatomic, readonly) NSInteger responseStatusCode;
 @property (nonatomic, readonly) NSError *error;
 
 + (void)setTimeout:(NSUInteger)tout;
 
 -(id)initWithDelegate:(id)aDelegate andApiKey:(NSString *)key;
 -(void)callApiMethod:(NSString *)method withParams:(NSDictionary *)params;
+- (void)cancel;
 
 @end
