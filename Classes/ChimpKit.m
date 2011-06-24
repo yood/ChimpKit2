@@ -31,7 +31,7 @@ static NSUInteger timeout = 10;
     timeout = tout;
 }
 
-#pragma mark Initialization
+#pragma mark - Initialization
 
 - (void)setApiKey:(NSString*)key {
     apiKey = key;
@@ -55,7 +55,7 @@ static NSUInteger timeout = 10;
 	return self;
 }
 
-#pragma mark Setup
+#pragma mark - Setup
 
 - (NSMutableData *)encodeRequestParams:(NSDictionary *)params {
     NSMutableDictionary *postBodyParams = [NSMutableDictionary dictionary];
@@ -87,7 +87,7 @@ static NSUInteger timeout = 10;
     self.connection = [[[NSURLConnection alloc] initWithRequest:request delegate:self] autorelease];
 }
 
-#pragma mark NSURLConnection delegate methods
+#pragma mark - NSURLConnection delegate methods
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
     _responseStatusCode = [((NSHTTPURLResponse *)response) statusCode];
@@ -107,7 +107,8 @@ static NSUInteger timeout = 10;
     [self cleanup];
 }
 
-#pragma mark Helpers
+#pragma mark - Helpers
+
 - (void)notifyDelegateOfSuccess {
     _responseString = [[NSString alloc] initWithData:self.responseData encoding:NSUTF8StringEncoding];
     if ([self.delegate respondsToSelector:@selector(ckRequestSucceeded:)]) {
@@ -132,7 +133,7 @@ static NSUInteger timeout = 10;
     return [encodedString autorelease];
 }
 
-#pragma mark Tear down
+#pragma mark - Tear down
 
 - (void)cancel {
     if (self.connection) {
