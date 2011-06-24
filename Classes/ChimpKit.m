@@ -73,7 +73,6 @@ static NSUInteger timeout = 10;
 
 - (void)callApiMethod:(NSString *)method withParams:(NSDictionary *)params {
     [self cleanup];
-    self.responseData = [NSMutableData data];
 
     NSString *urlString = [NSString stringWithFormat:@"%@%@", self.apiUrl, method];
 
@@ -90,6 +89,7 @@ static NSUInteger timeout = 10;
 #pragma mark NSURLConnection delegate methods
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+    self.responseData = [NSMutableData data];
     _responseStatusCode = [((NSHTTPURLResponse *)response) statusCode];
 }
 
