@@ -50,6 +50,7 @@ static NSUInteger timeout = 10;
         self.apiUrl  = @"https://api.mailchimp.com/1.3/?method=";
         [self setApiKey:key];
         self.delegate = aDelegate;
+        self.responseData = [NSMutableData data];
 	}
 	return self;
 }
@@ -72,7 +73,7 @@ static NSUInteger timeout = 10;
 }
 
 - (void)callApiMethod:(NSString *)method withParams:(NSDictionary *)params {
-    [self cleanup];
+    [self cancel];
 
     NSString *urlString = [NSString stringWithFormat:@"%@%@", self.apiUrl, method];
 
@@ -89,7 +90,6 @@ static NSUInteger timeout = 10;
 #pragma mark NSURLConnection delegate methods
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
-    self.responseData = [NSMutableData data];
     _responseStatusCode = [((NSHTTPURLResponse *)response) statusCode];
 }
 
@@ -137,18 +137,14 @@ static NSUInteger timeout = 10;
 - (void)cancel {
     if (self.connection) {
         [self.connection cancel];
-        [self cleanup];
     }
+
+    [self cleanup];
 }
 
 - (void)cleanup {
-    if (self.connection) {
-        self.connection = nil;
-    }
-
-    if (self.responseData) {
-        self.responseData = nil;
-    }
+    self.connection = nil;
+    [self.responseData setLength:0];
 }
 
 - (void)dealloc {
@@ -162,6 +158,7 @@ static NSUInteger timeout = 10;
         [_error release];
     }
 
+    self.responseData = nil;
     self.apiKey = nil;
     self.apiUrl = nil;
     [super dealloc];
